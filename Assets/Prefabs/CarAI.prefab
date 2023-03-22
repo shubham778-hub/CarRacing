@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3657926270899849867}
-  - component: {fileID: 3657926270899849864}
   - component: {fileID: 3657926270899849865}
+  - component: {fileID: 3657926270899849864}
   m_Layer: 0
   m_Name: CarAI
   m_TagString: Untagged
@@ -34,6 +34,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &3657926270899849865
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3657926270899849866}
+  serializedVersion: 2
+  m_Mass: 1300
+  m_Drag: 15
+  m_AngularDrag: 10
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 80
+  m_CollisionDetection: 2
 --- !u!114 &3657926270899849864
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -85,22 +101,6 @@ MonoBehaviour:
   currentWaypoint: 0
   speed: 50
   rotationSpeed: 2
---- !u!54 &3657926270899849865
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3657926270899849866}
-  serializedVersion: 2
-  m_Mass: 1300
-  m_Drag: 15
-  m_AngularDrag: 10
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 80
-  m_CollisionDetection: 2
 --- !u!1 &3657926271853433405
 GameObject:
   m_ObjectHideFlags: 0
@@ -114,7 +114,7 @@ GameObject:
   - component: {fileID: 3657926271853433400}
   - component: {fileID: 3657926271853433403}
   m_Layer: 0
-  m_Name: Capsule
+  m_Name: Carbody
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
