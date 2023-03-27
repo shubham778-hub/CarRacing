@@ -28,9 +28,12 @@ public class AvoidOtherCar : MonoBehaviour
 
     void Update()
     {
-
-        rightSideClear = rightSensor.SensorHit();
-        leftSideClear = leftSensor.SensorHit();
+        rightSensor.SensorHit();
+        leftSensor.SensorHit();
+        rightAngleSensor.RightAngleSensorhit();
+        leftAngleSensor.LeftAngleSensorhit();
+        rightSideClear = rightSensor.canOvertake;
+        leftSideClear = leftSensor.canOvertake;
        
 
 

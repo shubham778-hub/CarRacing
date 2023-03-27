@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     [Header("Circurt Data")]
     [SerializeField] private Circurt circurt;
 
+    [SerializeField] private Circurt pitShopPath;
+
 
     private void Awake()
     {
@@ -17,24 +19,33 @@ public class GameManager : MonoBehaviour
             instance = this;
         else
             Destroy(gameObject);
+
+        pitShopPath.gameObject.SetActive(false);
     }
 
-
-    // Start is called before the first frame update
-    void Start()
+    private void Update()
     {
-        
+        if(CarManager.instance.GetCarfule().GetNeedPitShopState() == true)
+        {
+            pitShopPath.gameObject.SetActive(true);
+            circurt.gameObject.SetActive(false);
+        }
+        else
+        {
+            pitShopPath.gameObject.SetActive(false);
+            circurt.gameObject.SetActive(true);
+        }
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
 
     public Circurt GetCircurtData()
     {
         return circurt;
     }
+
+    public Circurt GetPitShopCircute()
+    {
+        return pitShopPath;
+    }
+
+
 }

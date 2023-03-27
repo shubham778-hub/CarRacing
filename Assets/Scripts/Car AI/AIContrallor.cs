@@ -8,10 +8,11 @@ public class AIContrallor : MonoBehaviour
     [Header("Required Sctipts")]
     [SerializeField] private CheckGroundRay checkGround;
     [SerializeField] private AvoidOtherCar avoidCar;
+    [SerializeField] private CarFule carfule;
 
     [Header("Car Property")]
     [Range(0,300)] [SerializeField] private float currentSpeed;
-    [Range(0,500)] [SerializeField] private float turnSpeed;
+    [Range(0,1000)] [SerializeField] private float turnSpeed;
     [SerializeField] private float currentSteeringAngle; //TURN VALUE OF CAR
     [SerializeField] private float groundForce;
     [SerializeField] private float avoidForce;
@@ -26,7 +27,8 @@ public class AIContrallor : MonoBehaviour
     [SerializeField] private bool _isGroundTouch;
 
     private Rigidbody carBody;
-
+    private bool isFuleRefling;
+    private float _currentSpeed;
 
 
     // Start is called before the first frame update
@@ -35,7 +37,9 @@ public class AIContrallor : MonoBehaviour
         checkGround = GetComponentInChildren<CheckGroundRay>();
         carBody = GetComponent<Rigidbody>();
         avoidCar = GetComponentInChildren<AvoidOtherCar>();
+        carfule = GetComponent<CarFule>();
         SetCurrentWaypoint();
+        _currentSpeed = currentSpeed;
     }
 
     // Update is called once per frame
@@ -141,39 +145,85 @@ public class AIContrallor : MonoBehaviour
         {
             carBody.AddForce(-Vector3.up * groundForce);
         }
-        else
+        else if(!carfule.GetFuleTankState() || isFuleRefling)
         {
-            carBody.velocity = carBody.velocity + (transform.forward * currentSpeed * Time.fixedDeltaTime);
+            carBody.velocity = carBody.velocity + (transform.forward * _currentSpeed * Time.fixedDeltaTime);
         }
     }
 
     public void SetCurrentWaypoint()
     {
-        traget = GameManager.instance.GetCircurtData().wayPoints[currentWP].position;
+        if (carfule.GetNeedPitShopState() == false)
+        {
+            traget = GameManager.instance.GetCircurtData().wayPoints[currentWP].position;
 
-        float ranX = Random.Range(-1, 1);
-        float ranZ = Random.Range(-1, 1);
+            float ranX = Random.Range(-1, 1);
+            float ranZ = Random.Range(-1, 1);
 
-        traget.x += ranX;
-        traget.z += ranZ;
+            traget.x += ranX;
+            traget.z += ranZ;
+
+        }
+        else
+        {
+            traget = GameManager.instance.GetPitShopCircute().wayPoints[currentWP].position;
+
+            float ranX = Random.Range(-1, 1);
+            float ranZ = Random.Range(-1, 1);
+
+            traget.x += ranX;
+            traget.z += ranZ;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Waypoint"))
         {
-            if(other.gameObject.GetComponent<AiPathIndex>().pathIndex == currentWP)
+            if(carfule.GetNeedPitShopState() == false)
             {
-               // print("Go to next path");
-                currentWP++;
-            }
+                if (other.gameObject.GetComponent<AiPathIndex>().pathIndex == currentWP)
+                {
+                    // print("Go to next path");
+                    currentWP++;
+                }
 
-            if (currentWP >= GameManager.instance.GetCircurtData().wayPoints.Length)
+                if (currentWP >= GameManager.instance.GetCircurtData().wayPoints.Length)
+                {
+                    currentWP = 0;
+                }
+            }
+            else
             {
-                currentWP = 0;
+                if (other.gameObject.GetComponent<AiPathIndex>().pathIndex == currentWP)
+                {
+                    // print("Go to next path");
+                    currentWP++;
+                }
+                if(currentWP >= GameManager.instance.GetPitShopCircute().wayPoints.Length - 1)
+                {
+                    print("Hold to refile fule");
+                    isFuleRefling = true;
+                    _currentSpeed = 0;
+                    StartCoroutine(HoldAtPitShop());
+                }
             }
             SetCurrentWaypoint();
         }
     }
+    public IEnumerator HoldAtPitShop()
+    {
+        carfule.SetNeedPitshopState( true);
+        
+        print("Corutine called");
+        yield return new WaitForSeconds(5);
+        carfule.SetNeedPitshopState(false);
+        isFuleRefling = false;
+        _currentSpeed = currentSpeed;
+        currentWP = 0;
+        SetCurrentWaypoint();
+        print("Corutine end");
+    }
+
 
 }
